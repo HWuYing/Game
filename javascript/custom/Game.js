@@ -18,9 +18,12 @@ app.LoadFile({key: 'Game'}, function () {
             XSize: this.width / XSize,
             YSize: this.height / YSize
         };
-
         DIVIDESIZE.Xsize = XSize;
         DIVIDESIZE.YSize = YSize;
+        this.canvasBuffer = document.createElement('canvas');
+        this.canvasBuffer.width = this.width;
+        this.canvasBuffer.height = this.height;
+        this.ContextBuffer = this.canvasBuffer.getContext('2d');
     }
 
     Game.prototype.GameModelCache = {};
@@ -33,21 +36,24 @@ app.LoadFile({key: 'Game'}, function () {
         if (!this.GameModelCache.hasOwnProperty(model.position))
             this.GameModelCache[model.position] = [];
         this.GameModelCache[model.position].push(model);
+        if(typeof model.resizeMoveVector == 'function') model.resizeMoveVector(this.size);
+        if(typeof model.setMaxMove == 'function')model.setMaxMove(this.width , this.height);
         model.setSize(this.size);
     };
 
     Game.prototype.drawGameModel = function () {
         var keys = Object.keys(this.GameModelCache).sort(), models;
-        if(DRAWSTATE){
-            DRAWSTATE = true;
-            return ;
-        }
+        if(DRAWSTATE){return ;}
+        DRAWSTATE = true;
         for (var i = 0, ii = keys.length; i < ii; i++) {
             models = this.GameModelCache[keys[i]];
             for (var j = 0, jj = models.length; j < jj; j++) {
-                models[j].draw(this.Context);
+                models[j].draw(this.ContextBuffer);
             }
         }
+        this.Context.clearRect(0 , 0 , this.width , this.height);
+        this.Context.drawImage(this.canvasBuffer , 0 ,0);
+        this.ContextBuffer.clearRect(0,0,this.width,this.height);
         DRAWSTATE = false;
     };
 

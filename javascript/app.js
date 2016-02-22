@@ -79,7 +79,7 @@
         forEach(this, fn);
         return this;
     };
-    var regFnCache = new cache();
+    var regFnCache = new cache() , regValueCache = new cache();
     /**
      *  用法传递一个key 函数名称 已经fn 函数引用
      *  场景 用于注册一个函数 方便在加载文件时 需要从其他已经加载的文件中获取函数引用
@@ -91,7 +91,12 @@
     app.regFn = function (key, fn) {
         regFnCache.regiest.apply(regFnCache, arguments);
     };
-
+    app.regValue = function(key , value){
+        regValueCache.regiest.apply(regValueCache,arguments);
+    };
+    app.getValue = function(key){
+       return regValueCache.get.apply(regValueCache,arguments);
+    };
     app.Event = app.Event || function () {
         var guid = 0 , origFns = {};
 
