@@ -56,8 +56,9 @@
         Game.config({runTime: 20});
         cGame = Game(document.querySelector('#main'), 390, 390);
         cGame.putGameModel(new BgModel(0, 0, 390, 390, 1).drawType('solidColor', {}));
+        /*{UPPER: 'upper', ALSO: 'also', LOWER: "lower", LEFT: 'left'}*/
         cGame.putGameModel(new ComputerTack(120, 360, 30, 30, 99).setDistance(2, 2).
-            setImgSrc(baseUrl + 'images/Tack.png').setGame(cGame).setMap(MapArr).setDirection('ALSO'));
+            setImgSrc(baseUrl + 'images/Tack.png').setGame(cGame).setMap(MapArr).setDirection('UPPER'));
         (function () {
             var arr , GameModelRealization;
             for (var i = 0 , ii = MapArr.length; i < ii; i++) {

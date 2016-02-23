@@ -4,10 +4,10 @@
 app.LoadFile({key: 'TackModel', fileList: ['custom/GameModel/moveModel/MoveModel.js', 'custom/GameModel/moveModel/Bullet/BulletModel.js']
 }, function (MoveModel, BulletModel) {
     var imgReact = {
-        UPPER:[24, 302, 38, 38],
+        UPPER:[23, 302, 38, 38],
         ALSO:[24,218, 35, 35],
-        LOWER:[24,87, 38, 38],
-        LEFT:[24,136, 38, 38]
+        LOWER:[24,50, 38, 38],
+        LEFT:[24,133, 35, 38]
     };
     function TackModel(x, y, XSize, YSize, position) {
         MoveModel.call(this, x, y, XSize, YSize, position);
@@ -58,7 +58,7 @@ app.LoadFile({key: 'TackModel', fileList: ['custom/GameModel/moveModel/MoveModel
      * @constructor
      */
     TackModel.prototype.ObstacleDetection = function(point){
-        console.log(point);
+        
     };
 
     /**
@@ -69,7 +69,7 @@ app.LoadFile({key: 'TackModel', fileList: ['custom/GameModel/moveModel/MoveModel
     TackModel.prototype.BoundaryDetection = function(point){
         if (point[0] > this.maxMove[0] - this.size[0]) point[0] = this.maxMove[0] - this.size[0];
         else if (point[0] < 0) point[0] = 0;
-        if (point[1] > this.maxMove[1] - this.size[1]) point[1] = this.moveVector[1] = this.maxMove[1] - this.size[1];
+        if (point[1] > this.maxMove[1] - this.size[1]) point[1] =  this.maxMove[1] - this.size[1];
         else if (point[1] < 0) point[1] = 0;
         return this;
     };
