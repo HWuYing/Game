@@ -38,7 +38,7 @@ app.LoadFile({key: 'Game'}, function () {
         this.GameModelCache[model.position].push(model);
         if(typeof model.resizeMoveVector == 'function') model.resizeMoveVector(this.size);
         if(typeof model.setMaxMove == 'function')model.setMaxMove(this.width , this.height);
-        model.setSize(this.size);
+        model.setSize(this.size).removeModel(this.GameModelCache[model.position]);
     };
 
     Game.prototype.drawGameModel = function () {
@@ -48,7 +48,7 @@ app.LoadFile({key: 'Game'}, function () {
         for (var i = 0, ii = keys.length; i < ii; i++) {
             models = this.GameModelCache[keys[i]];
             for (var j = 0, jj = models.length; j < jj; j++) {
-                models[j].draw(this.ContextBuffer);
+                models[j] && models[j].draw(this.ContextBuffer);
             }
         }
         this.Context.clearRect(0 , 0 , this.width , this.height);

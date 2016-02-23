@@ -7,7 +7,7 @@
         'custom/GameModel/obstacle/SteelPlate.js',
         'custom/GameModel/obstacle/Brick.js',
         'custom/GameModel/obstacle/Boss.js'], function (Game, BgModel, ComputerTack, SteelPlate,Brick,Boss) {
-        var panArr = [
+        var cGame , baseUrl = app.getValue('baseUrl'),MapArr = [
             [0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0, 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0, 0 , 0 , 0 , 0 , 0 , 0],
             [0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0, 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0, 0 , 0 , 0 , 0 , 0 , 0],
             [0 , 0 , 2 , 2 , 0 , 0 , 2 , 2 , 0 , 0, 2 , 2 , 0 , 0 , 2 , 2 , 0 , 0 , 2 , 2, 0 , 0 , 2 , 2 , 0 , 0],
@@ -35,8 +35,7 @@
             [0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0, 0 , 2 , 9 , 9 , 2 , 0 , 0 , 0 , 0 , 0, 0 , 0 , 0 , 0 , 0 , 0],
             [0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0, 0 , 2 , 9 , 9 , 2 , 0 , 0 , 0 , 0 , 0, 0 , 0 , 0 , 0 , 0 , 0]
         ];
-        var cGame , baseUrl = app.getValue('baseUrl');
-
+        app.regValue('MapArr',MapArr);
         function createGameModel(GameType, row, col) {
             var GameModelRealization;
             switch (GameType) {
@@ -53,17 +52,19 @@
                     break;
             }
             return GameModelRealization;
-        };
-        Game.config({runTime: 30});
+        }
+        Game.config({runTime: 20});
         cGame = Game(document.querySelector('#main'), 390, 390);
         cGame.putGameModel(new BgModel(0, 0, 390, 390, 1).drawType('solidColor', {}));
-        cGame.putGameModel(new ComputerTack(120, 360, 30, 30, 99).reactImg(23, 302, 38, 38).setDistance(0, 2).setImgSrc(baseUrl + 'images/Tack.png'));
+        cGame.putGameModel(new ComputerTack(120, 360, 30, 30, 99).
+            reactImg(24, 302, 38, 38).setDistance(0, 2).
+            setImgSrc(baseUrl + 'images/Tack.png').setGame(cGame).setMap(cGame));
         (function () {
             var arr , GameModelRealization;
-            for (var i = 0 , ii = panArr.length; i < ii; i++) {
-                arr = panArr[i];
+            for (var i = 0 , ii = MapArr.length; i < ii; i++) {
+                arr = MapArr[i];
                 for (var j = 0 , jj = arr.length; j < jj; j++) {
-                    if(arr[j] == 9 && (panArr[i-1][j] == 9 || arr[j-1] == 9)){
+                    if(arr[j] == 9 && (MapArr[i-1][j] == 9 || arr[j-1] == 9)){
                         continue;
                     }
                     GameModelRealization = createGameModel(arr[j], i, j);
@@ -73,6 +74,6 @@
         })();
 
         Game.Run();
-//        setTimeout(Game.stop , 1000);
+//        setTimeout(Game.stop , 10000);
     });
 })();
