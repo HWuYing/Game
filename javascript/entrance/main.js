@@ -73,6 +73,6 @@
         })();
 
         Game.Run();
-        setTimeout(Game.stop , 1000);
+//        setTimeout(Game.stop , 1000);
     });
 })();

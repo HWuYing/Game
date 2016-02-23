@@ -23,6 +23,7 @@ app.LoadFile({key: 'TackModel', fileList: ['custom/GameModel/moveModel/MoveModel
     }
 
     TackModel.extend(MoveModel);
+    TackModel.prototype.imgReact = imgReact;
     TackModel.prototype.draw = function (ctx) {
         if (!this.Image) return;
         ctx.save();
@@ -74,7 +75,10 @@ app.LoadFile({key: 'TackModel', fileList: ['custom/GameModel/moveModel/MoveModel
      * @constructor
      */
     TackModel.prototype.ObstacleDetection = function (point) {
+        var divIdesize = this.getDividesize(), matrixPoint = [point[0]/this.moveVector[0]/(divIdesize.XSize/this.Map.length)
+            ,point[1]/this.moveVector[1]/(divIdesize.YSize/this.Map.length)];
 
+        console.log(matrixPoint);
     };
 
     /**
