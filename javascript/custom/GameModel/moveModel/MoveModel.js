@@ -20,5 +20,10 @@ app.LoadFile({key: 'MoveModel', fileList: ['custom/GameModel/BaseModel.js']
         this.maxMove[1] = maxY;
         return this;
     };
+    MoveModel.prototype.setDistance = function(xDis,yDis){
+        this.distance[0] = xDis;
+        this.distance[1] = yDis;
+        return this;
+    };
     return MoveModel;
 });

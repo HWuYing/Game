@@ -61,7 +61,7 @@ app.LoadFile({key: 'Game'}, function () {
         var g = new Game(canvas, XSize, YSize);
         GameCache.push(g);
         return g;
-    };
+    }
 
     BuildGame.config = function(options){
         if (typeof options.runTime == 'number') BuildGame.setRunTime(options.runTime);
