@@ -121,7 +121,6 @@ app.LoadFile({key: 'TackModel', fileList: ['custom/GameModel/moveModel/MoveModel
 
     TackModel.prototype.getBulletDistance = function () {
         var distance = [0, 0], DIRECTION = this.DIRECTION;
-        ;
         switch (this.direction) {
             case DIRECTION.UPPER :
                 distance = [0 , -this.BullSpeed];
