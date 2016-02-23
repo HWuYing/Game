@@ -64,8 +64,9 @@
             for (var i = 0 , ii = MapArr.length; i < ii; i++) {
                 arr = MapArr[i];
                 for (var j = 0 , jj = arr.length; j < jj; j++) {
-                    if(arr[j] == 9 && (MapArr[i-1][j] == 9 || arr[j-1] == 9))continue;
+                    if((arr[j] == 9 && (MapArr[i-1][j] == 9 || arr[j-1] == 9)) || arr[j] == 0)continue;
                     GameModelRealization = createGameModel(arr[j], i, j);
+                    if(arr[j] != 9) arr[j] = GameModelRealization;
                     if (GameModelRealization)cGame.putGameModel(GameModelRealization);
                 }
             }
