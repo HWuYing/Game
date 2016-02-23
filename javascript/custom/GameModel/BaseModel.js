@@ -10,6 +10,10 @@ app.LoadFile({key: 'BaseModel', fileList: ['custom/Game.js']}, function (Game) {
 
     //清除不需要的缓存
     BaseModel.prototype.clearModelCache = [];
+    //页面分成多少份
+    BaseModel.prototype.getDividesize = function(){
+        return Game.getDividesize();
+    };
     //绘制模型到canvas
     BaseModel.prototype.draw = function (canvas) {
     };

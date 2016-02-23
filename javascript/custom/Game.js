@@ -2,7 +2,7 @@
  * Created by Administrator on 2016/2/21.
  */
 app.LoadFile({key: 'Game'}, function () {
-    var DIVIDESIZE = {Xsize: null, YSize: null}, GameCache = [], si = null,
+    var DIVIDESIZE = {XSize: null, YSize: null}, GameCache = [], si = null,
         DRAWSTATE = false, RunTime = 30;
 
     function Run() {
@@ -18,7 +18,7 @@ app.LoadFile({key: 'Game'}, function () {
             XSize: this.width / XSize,
             YSize: this.height / YSize
         };
-        DIVIDESIZE.Xsize = XSize;
+        DIVIDESIZE.XSize = XSize;
         DIVIDESIZE.YSize = YSize;
         this.canvasBuffer = document.createElement('canvas');
         this.canvasBuffer.width = this.width;
@@ -28,7 +28,7 @@ app.LoadFile({key: 'Game'}, function () {
 
     Game.prototype.GameModelCache = {};
     Game.prototype.Resize = function () {
-        this.size.XSize = this.canvas.offsetWidth / DIVIDESIZE.Xsize;
+        this.size.XSize = this.canvas.offsetWidth / DIVIDESIZE.XSize;
         this.size.YSize = this.canvas.offsetHeight / DIVIDESIZE.YSize;
     };
 
@@ -66,6 +66,9 @@ app.LoadFile({key: 'Game'}, function () {
     BuildGame.config = function(options){
         if (typeof options.runTime == 'number') BuildGame.setRunTime(options.runTime);
         return this;
+    };
+    BuildGame.getDividesize = function(){
+        return DIVIDESIZE;
     };
     BuildGame.Run = function () {
         if (si == null) si = setInterval(Run, RunTime);

@@ -13,7 +13,7 @@ app.LoadFile({key: 'MoveModel', fileList: ['custom/GameModel/BaseModel.js']
         this.Map = null;
     }
     MoveModel.extend(BaseModel);
-    MoveModel.prototype.DIRECTION = {UPPER: 'upper', ALSO: 'also', LOWER: "lower", LEFT: 'left'};
+    MoveModel.prototype.DIRECTION = DIRECTION;
     MoveModel.prototype.move=function(){};
     MoveModel.prototype.resizeMoveVector = function(size){
         this.moveVector[0] *= size.XSize;

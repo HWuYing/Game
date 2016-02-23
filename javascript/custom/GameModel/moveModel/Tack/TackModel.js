@@ -3,8 +3,12 @@
  */
 app.LoadFile({key: 'TackModel', fileList: ['custom/GameModel/moveModel/MoveModel.js', 'custom/GameModel/moveModel/Bullet/BulletModel.js']
 }, function (MoveModel, BulletModel) {
-    var DIRECTION = BulletModel.prototype.DIRECTION;
-
+    var imgReact = {
+        UPPER:[24, 302, 38, 38],
+        ALSO:[24,218, 35, 35],
+        LOWER:[24,87, 38, 38],
+        LEFT:[24,136, 38, 38]
+    };
     function TackModel(x, y, XSize, YSize, position) {
         MoveModel.call(this, x, y, XSize, YSize, position);
         this.Image = null; // 图片
@@ -36,17 +40,52 @@ app.LoadFile({key: 'TackModel', fileList: ['custom/GameModel/moveModel/MoveModel
             setTimeout(function(){_self.FireBullet();},30);
         }
     };
+    /**
+     * 通过方向 获取移动速度
+     */
+    TackModel.prototype.moveDistancePoint = function(){
+        var distance = [0,0] , DIRECTION = this.DIRECTION;
+        switch (this.direction){
+            case DIRECTION.UPPER:distance[1] = -Math.abs(this.distance[1]*this.moveVector[1]);this.reactImg.apply(this,imgReact.UPPER);break;
+            case DIRECTION.ALSO:distance[0] = Math.abs(this.distance[0]*this.moveVector[0]);this.reactImg.apply(this,imgReact.ALSO);break;
+            case DIRECTION.LOWER:distance[1] = Math.abs(this.distance[1]*this.moveVector[1]);this.reactImg.apply(this,imgReact.LOWER);break;
+            case DIRECTION.LEFT:distance[0] = -Math.abs(this.distance[0]*this.moveVector[0]);this.reactImg.apply(this,imgReact.LEFT);break;
+        }
+        return distance;
+    };
+    /**
+     * 检测障碍物
+     * @constructor
+     */
+    TackModel.prototype.ObstacleDetection = function(point){
+        console.log(point);
+    };
+
+    /**
+     * 检测边界
+     * @param point
+     * @constructor
+     */
+    TackModel.prototype.BoundaryDetection = function(point){
+        if (point[0] > this.maxMove[0] - this.size[0]) point[0] = this.maxMove[0] - this.size[0];
+        else if (point[0] < 0) point[0] = 0;
+        if (point[1] > this.maxMove[1] - this.size[1]) point[1] = this.moveVector[1] = this.maxMove[1] - this.size[1];
+        else if (point[1] < 0) point[1] = 0;
+        return this;
+    };
+
     TackModel.prototype.move = function () {
-        if (this.point[0] > this.maxMove[0] - this.size[0]) this.moveVector[0] = -Math.abs(this.moveVector[0]);
-        else if (this.point[0] < 0) this.moveVector[0] = Math.abs(this.moveVector[0]);
-        if (this.point[1] > this.maxMove[1] - this.size[1]) this.moveVector[1] = -Math.abs(this.moveVector[1]);
-        else if (this.point[1] < 0)this.moveVector[1] = Math.abs(this.moveVector[1]);
-        this.point[0] += this.moveVector[0] * this.distance[0];
-        this.point[1] += this.moveVector[1] * this.distance[1];
+        var distance = this.moveDistancePoint() , point = [this.point[0],this.point[1]];
+        point[0] += distance[0];
+        point[1] += distance[1];
+        this.BoundaryDetection(point).ObstacleDetection(point);
+        this.point[0] = point[0];
+        this.point[1] = point[1];
         return this;
     };
     TackModel.prototype.getFireBulletPoint = function () {
-        var point = [] , thisPointCenter = [this.point[0] + this.size[0] / 2 , this.point[1] + this.size[1] / 2];
+        var point = [] , thisPointCenter = [this.point[0] + this.size[0] / 2 , this.point[1] + this.size[1] / 2],
+            DIRECTION = this.DIRECTION;
         switch (this.direction) {
             case DIRECTION.UPPER : point = [thisPointCenter[0] , thisPointCenter[1] - this.size[1] / 2]; break;
             case DIRECTION.ALSO :  point = [thisPointCenter[0] + this.size[0] / 2 , thisPointCenter[1]]; break;
@@ -57,7 +96,7 @@ app.LoadFile({key: 'TackModel', fileList: ['custom/GameModel/moveModel/MoveModel
     };
 
     TackModel.prototype.getBulletDistance = function(){
-        var distance = [0,0];
+        var distance = [0,0],DIRECTION = this.DIRECTION;;
         switch (this.direction) {
             case DIRECTION.UPPER : distance = [0 , -this.BullSpeed]; break;
             case DIRECTION.ALSO : distance = [this.BullSpeed , 0]; break;
