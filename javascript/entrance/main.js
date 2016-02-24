@@ -58,13 +58,11 @@
         cGame = Game(document.querySelector('#main'), 390, 390);
         cGame.putGameModel(new BgModel(0, 0, 390, 390, 1).drawType('solidColor', {}));
         /*{UPPER: 'upper', ALSO: 'also', LOWER: "lower", LEFT: 'left'}*/
-        cGame.putGameModel(new ComputerTack(120, 360, 30, 30, 99).setDistance(5 , 5).setImgSrc(baseUrl + 'images/Tack.png').setGame(cGame).setMap(MapArr).setDirection('LEFT'));
-        cGame.putGameModel(new ComputerTack(60, 240, 30, 30, 99).setDistance(4, 4).setImgSrc(baseUrl + 'images/Tack.png').setGame(cGame).setMap(MapArr).setDirection('LEFT'));
-        cGame.putGameModel(new ComputerTack(100, 180, 30, 30, 99).setDistance(5, 2).setImgSrc(baseUrl + 'images/Tack.png').setGame(cGame).setMap(MapArr).setDirection('LEFT'));
-        cGame.putGameModel(new ComputerTack(200, 160, 30, 30, 99).setDistance(5, 8).setImgSrc(baseUrl + 'images/Tack.png').setGame(cGame).setMap(MapArr).setDirection('LEFT'));
-        cGame.putGameModel(new ComputerTack(360, 130, 30, 30, 99).setDistance(7, 2).setImgSrc(baseUrl + 'images/Tack.png').setGame(cGame).setMap(MapArr).setDirection('LEFT'));
-        cGame.putGameModel(new ComputerTack(150, 60, 30, 30, 99).setDistance(2, 4).setImgSrc(baseUrl + 'images/Tack.png').setGame(cGame).setMap(MapArr).setDirection('LEFT'));
-        cGame.putGameModel(new ComputerTack(120, 120, 30, 30, 99).setDistance(8, 2).setImgSrc(baseUrl + 'images/Tack.png').setGame(cGame).setMap(MapArr).setDirection('LEFT'));
+        (function(){
+            for(var i = 0 ; i < 2 ; i++){
+                cGame.putGameModel(new ComputerTack(i*30 % 360, (i+1)*330%360, 30, 30, 20).setDistance(i*3, i*3).setImgSrc(baseUrl + 'images/Tack.png').setGame(cGame).setMap(MapArr).setDirection('UPPER'));
+            }
+        })();
         (function () {
             var arr, GameModelRealization;
             for (var i = 0, ii = MapArr.length; i < ii; i++) {

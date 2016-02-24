@@ -147,16 +147,16 @@ app.LoadFile({
         var distance = [0, 0], DIRECTION = this.DIRECTION;
         switch (this.direction) {
             case DIRECTION.UPPER :
-                distance = [0, -this.BullSpeed*this.moveVector[0]];
+                distance = [0, (-this.BullSpeed-this.distance[0])*this.moveVector[0]];
                 break;
             case DIRECTION.ALSO :
-                distance = [this.BullSpeed*this.moveVector[1], 0];
+                distance = [(this.BullSpeed+this.distance[1])*this.moveVector[1], 0];
                 break;
             case DIRECTION.LOWER :
-                distance = [0, this.BullSpeed*this.moveVector[1]];
+                distance = [0,(this.BullSpeed+this.distance[1])*this.moveVector[1]];
                 break;
             case DIRECTION.LEFT :
-                distance = [-this.BullSpeed*this.moveVector[0], 0];
+                distance = [-(this.BullSpeed-this.distance[0])*this.moveVector[0], 0];
                 break;
         }
         return distance;
