@@ -7,7 +7,7 @@ app.LoadFile({key: 'MoveModel', fileList: ['custom/GameModel/BaseModel.js']
     function MoveModel(x, y, XSize, YSize,position) {
         BaseModel.call(this, x, y, XSize, YSize,position);
         this.moveVector = [1,1];
-        this.maxMove = [];
+        this.maxMove = [1,1];
         this.distance = [0,0];//移动速度
         this.direction = DIRECTION.UPPER; //移动方向
         this.Map = null;
@@ -37,6 +37,16 @@ app.LoadFile({key: 'MoveModel', fileList: ['custom/GameModel/BaseModel.js']
     //设置移动方向
     MoveModel.prototype.setDirection = function(direction){
         this.direction = this.DIRECTION[direction] || this.DIRECTION.UPPER;
+        return this;
+    };
+
+    /**
+     * 设置对应Canvas
+     * @param Game
+     * @returns {MoveModel}
+     */
+    MoveModel.prototype.setGame = function (Game) {
+        this.Game = Game;
         return this;
     };
     return MoveModel;

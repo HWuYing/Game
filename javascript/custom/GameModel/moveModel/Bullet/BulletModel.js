@@ -32,15 +32,7 @@ app.LoadFile({key: 'BulletModel', fileList: ['custom/GameModel/moveModel/MoveMod
     BulletModel.prototype.move = function(){
         this.point[0]+=this.distance[0];
         this.point[1]+=this.distance[1];
-        if(this.moveMaxMove()) this.putClearModel(this);
-        return this;
-    };
-    /**
-     * 移除缓存
-     * @returns {BulletModel}
-     */
-    BulletModel.prototype.removeGameDraw = function(){
-        this.removeModel().removeTackCache(null);
+        if(this.moveMaxMove())this.putClearModel(this).removeTackCache();
         return this;
     };
     /**
