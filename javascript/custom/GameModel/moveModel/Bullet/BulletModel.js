@@ -30,8 +30,8 @@ app.LoadFile({key: 'BulletModel', fileList: ['custom/GameModel/moveModel/MoveMod
      * @returns {BulletModel}
      */
     BulletModel.prototype.move = function(){
-        this.point[0]+=this.distance[0];
-        this.point[1]+=this.distance[1];
+        this.point[0]+=this.distance[0]*this.moveVector[0];
+        this.point[1]+=this.distance[1]*this.moveVector[1];
         if(this.moveMaxMove())this.putClearModel(this).removeTackCache();
         return this;
     };
@@ -51,6 +51,32 @@ app.LoadFile({key: 'BulletModel', fileList: ['custom/GameModel/moveModel/MoveMod
             }
             return this;
         };
+        return this;
+    };
+
+    /**
+     * 设置子弹速度数组
+     * @param direction
+     * @param speed
+     * @returns {BulletModel}
+     */
+    BulletModel.prototype.setDistance = function(speed , relativeSpeed){
+        var  DIRECTION = this.DIRECTION;
+        relativeSpeed = relativeSpeed|| 0;
+        switch (this.direction) {
+            case DIRECTION.UPPER :
+                this.distance[1] = -(speed+relativeSpeed)*this.moveVector[1];
+                break;
+            case DIRECTION.ALSO :
+                this.distance[0] = (speed+relativeSpeed)*this.moveVector[0];
+                break;
+            case DIRECTION.LOWER :
+                this.distance[1] = (speed+relativeSpeed)*this.moveVector[1];
+                break;
+            case DIRECTION.LEFT :
+                this.distance[0] = -(speed+relativeSpeed)*this.moveVector[0];
+                break;
+        }
         return this;
     };
     /**

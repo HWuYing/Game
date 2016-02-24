@@ -59,8 +59,8 @@
         cGame.putGameModel(new BgModel(0, 0, 390, 390, 1).drawType('solidColor', {}));
         /*{UPPER: 'upper', ALSO: 'also', LOWER: "lower", LEFT: 'left'}*/
         (function(){
-            for(var i = 0 ; i < 2 ; i++){
-                cGame.putGameModel(new ComputerTack(i*30 % 360, (i+1)*330%360, 30, 30, 20).setDistance(i*3, i*3).setImgSrc(baseUrl + 'images/Tack.png').setGame(cGame).setMap(MapArr).setDirection('UPPER'));
+            for(var i = 0 ; i < 1 ; i++){
+                cGame.putGameModel(new ComputerTack(i*30 % 360, (i+1)*330%360, 30, 30, 20).setDistance(i+1*3, i+1*3).setImgSrc(baseUrl + 'images/Tack.png').setGame(cGame).setMap(MapArr).setDirection('UPPER'));
             }
         })();
         (function () {

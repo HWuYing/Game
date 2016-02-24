@@ -11,15 +11,17 @@ app.LoadFile({
         LOWER: [23, 50, 38, 38],
         LEFT: [24, 133, 35, 38]
     };
+
     function TackModel(x, y, XSize, YSize, position) {
         MoveModel.call(this, x, y, XSize, YSize, position);
         this.Image = null; // 图片
         this.react = null;//剪切图片
-        this.Game = null; //渲染的canvas封装对象
         this.BulletCache = []; //所有子弹集合
-        this.BullSpeed = 18; //子弹速度
+        this.BullSpeed = 1; //子弹速度
         this.FireInterval = 30; //发射间隔
         this.FireCount = 29; //记录间隔时间
+
+        this.DIRECTIONDistance = [0, 0];//当前方向上移动速度
     }
 
     TackModel.extend(MoveModel);
@@ -58,40 +60,42 @@ app.LoadFile({
     };
     /**
      * 通过方向 获取移动速度
-     * @returns {number[]}
+     * @returns {TackModel}
      */
     TackModel.prototype.moveDistancePoint = function () {
-        var distance = [0, 0], DIRECTION = this.DIRECTION;
+        var DIRECTION = this.DIRECTION;
+        this.DIRECTIONDistance[0] = 0;
+        this.DIRECTIONDistance[1] = 0;
         switch (this.direction) {
             case DIRECTION.UPPER:
-                distance[1] = -Math.abs(this.distance[1] * this.moveVector[1]);
+                this.DIRECTIONDistance[1] = -this.distance[1] * this.moveVector[1];
                 break;
             case DIRECTION.ALSO:
-                distance[0] = Math.abs(this.distance[0] * this.moveVector[0]);
+                this.DIRECTIONDistance[0] = this.distance[0] * this.moveVector[0];
                 break;
             case DIRECTION.LOWER:
-                distance[1] = Math.abs(this.distance[1] * this.moveVector[1]);
+                this.DIRECTIONDistance[1] = this.distance[1] * this.moveVector[1];
                 break;
             case DIRECTION.LEFT:
-                distance[0] = -Math.abs(this.distance[0] * this.moveVector[0]);
+                this.DIRECTIONDistance[0] = -this.distance[0] * this.moveVector[0];
                 break;
         }
-        return distance;
+        return this;
     };
 
 
     /**
-     * 检测障碍物
-     * @constructor
+     * 障碍物检测
+     * @param point
+     * @returns {TackModel}
      */
     TackModel.prototype.ObstacleDetection = function (point) {
-
+        return this;
     };
-
     /**
-     * 检测边界
+     * 边界检测
      * @param point
-     * @constructor
+     * @returns {TackModel}
      */
     TackModel.prototype.BoundaryDetection = function (point) {
         if (point[0] > this.maxMove[0] - this.size[0]) point[0] = this.maxMove[0] - this.size[0];
@@ -106,9 +110,9 @@ app.LoadFile({
      * @returns {TackModel}
      */
     TackModel.prototype.move = function () {
-        var distance = this.moveDistancePoint(), point = [this.point[0], this.point[1]];
-        point[0] += distance[0];
-        point[1] += distance[1];
+        var point = [this.point[0], this.point[1]];
+        point[0] += this.DIRECTIONDistance[0];
+        point[1] += this.DIRECTIONDistance[1];
         this.BoundaryDetection(point).ObstacleDetection(point);
         this.point[0] = point[0];
         this.point[1] = point[1];
@@ -140,31 +144,12 @@ app.LoadFile({
     };
 
     /**
-     * 获取子弹速度
-     * @returns {number[]}
+     * 发射子弹
+     * @returns {TackModel}
      */
-    TackModel.prototype.getBulletDistance = function () {
-        var distance = [0, 0], DIRECTION = this.DIRECTION;
-        switch (this.direction) {
-            case DIRECTION.UPPER :
-                distance = [0, (-this.BullSpeed-this.distance[0])*this.moveVector[0]];
-                break;
-            case DIRECTION.ALSO :
-                distance = [(this.BullSpeed+this.distance[1])*this.moveVector[1], 0];
-                break;
-            case DIRECTION.LOWER :
-                distance = [0,(this.BullSpeed+this.distance[1])*this.moveVector[1]];
-                break;
-            case DIRECTION.LEFT :
-                distance = [-(this.BullSpeed-this.distance[0])*this.moveVector[0], 0];
-                break;
-        }
-        return distance;
-    };
-
     TackModel.prototype.FireBullet = function () {
-        var bullet = new BulletModel(this.getFireBulletPoint()).setDirection(this.direction), bulletDistance = this.getBulletDistance();
-        bullet.setDistance(bulletDistance[0], bulletDistance[1]);
+        var bullet = new BulletModel(this.getFireBulletPoint()).setDirection(this.direction)
+            .setDistance(this.BullSpeed, Math.abs(this.DIRECTIONDistance[0] / this.moveVector[0] || this.DIRECTIONDistance[1] / this.moveVector[1]));
         this.BulletCache.push(bullet);
         bullet.removeTackCache(this);
         this.Game.putGameModel(bullet);
@@ -176,9 +161,9 @@ app.LoadFile({
      * @param direction
      * @returns {TackModel}
      */
-    TackModel.prototype.setDirection = function(direction){
+    TackModel.prototype.setDirection = function (direction) {
         this.direction = this.DIRECTION[direction] || this.DIRECTION.UPPER;
-        this.reactImg.apply(this, imgReact[direction]);
+        this.reactImg.apply(this, imgReact[direction]).moveDistancePoint();
         return this;
     };
 
