@@ -48,9 +48,6 @@
     }
 
     Function.prototype.extend = function(superFn){
-        console.log(this);
-        console.log(superFn);
-        console.log('========');
         if(!isFunction(superFn)) throw new Error('super is not function');
         if(this instanceof superFn) return this;
         var prototype = new Function() , subFnPrototype = this.prototype;
