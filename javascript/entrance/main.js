@@ -3,10 +3,12 @@
  */
 (function () {
     app.LoadFile(['custom/Game.js', 'custom/GameModel/BgModel.js',
+        'custom/GameModel/moveModel/Tack/TackModel.js',
         'custom/GameModel/moveModel/Tack/ComputerTack.js',
         'custom/GameModel/obstacle/SteelPlate.js',
         'custom/GameModel/obstacle/Brick.js',
-        'custom/GameModel/obstacle/Boss.js'], function (Game, BgModel, ComputerTack, SteelPlate, Brick, Boss) {
+        'custom/GameModel/obstacle/Boss.js',
+        'custom/keyManager.js'], function (Game, BgModel, TackModel ,ComputerTack, SteelPlate, Brick, Boss,keyManager) {
         var cGame, baseUrl = app.getValue('baseUrl'), MapArr = [
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -58,6 +60,10 @@
         cGame = Game(document.querySelector('#main'), 390, 390);
         cGame.putGameModel(new BgModel(0, 0, 390, 390, 1).drawType('solidColor', {}));
         /*{UPPER: 'upper', ALSO: 'also', LOWER: "lower", LEFT: 'left'}*/
+        var Tack001 = new TackModel(120 , 360 , 30, 30, 20).setDistance(3, 3)
+            .setImgSrc(baseUrl + 'images/Tack.png').setGame(cGame).setMap(MapArr).setDirection('UPPER');
+        cGame.putGameModel(Tack001);
+        keyManager.listenKeyDown(Tack001.proxyKeyFn('keydown')).listenKeyUp(Tack001.proxyKeyFn('keyup'));
         (function () {
             for (var i = 0; i < 1; i++) {
                 cGame.putGameModel(new ComputerTack(i * 30 % 360, (i + 1) * 330 % 360, 30, 30, 20).setDistance((i + 1) * 3, (i + 1) * 3)

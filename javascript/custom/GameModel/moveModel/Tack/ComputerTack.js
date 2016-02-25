@@ -5,12 +5,13 @@ app.LoadFile({key: 'ComputerTack', fileList: ['custom/GameModel/moveModel/Tack/T
 }, function (TackModel) {
     function ComputerTack(x, y, XSize, YSize , position) {
         TackModel.call(this, x, y, XSize, YSize , position);
+        this.FireBulletKey = 'DOWN';
     }
     ComputerTack.extend(TackModel);
     /**
-     * 检测边界
+     * point
      * @param point
-     * @constructor
+     * @returns {ComputerTack}
      */
     ComputerTack.prototype.BoundaryDetection = function (point) {
         /*{UPPER: 'upper', ALSO: 'also', LOWER: "lower", LEFT: 'left'}*/

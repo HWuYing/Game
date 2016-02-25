@@ -17,9 +17,11 @@ app.LoadFile({
         this.Image = null; // 图片
         this.react = null;//剪切图片
         this.BulletCache = []; //所有子弹集合
-        this.BullSpeed = 1; //子弹速度
+        this.BullSpeed = 5; //子弹速度
         this.FireInterval = 30; //发射间隔
         this.FireCount = 29; //记录间隔时间
+
+        this.FireBulletKey = 'UP'; //子弹发射状态
 
         this.DIRECTIONDistance = [0, 0];//当前方向上移动速度
     }
@@ -31,7 +33,7 @@ app.LoadFile({
      * @returns {TackModel}
      */
     TackModel.prototype.draw = function (ctx) {
-        if (!this.Image) return;
+        if (!this.Image) return this;
         ctx.save();
         if (this.react) ctx.drawImage(this.Image, this.react[0], this.react[1], this.react[2], this.react[3],
             this.point[0], this.point[1], this.size[0], this.size[1]);
@@ -49,12 +51,12 @@ app.LoadFile({
         var _self = this;
         this.move();
         this.FireCount++;
-        if (this.BulletCache.length <= 3 && this.FireCount >= this.FireInterval) {
-            this.FireCount = 0;
-            this.FireBullet();
+        if (_self.FireBulletKey == 'DOWN' && _self.BulletCache.length <= 3 && _self.FireCount >= _self.FireInterval) {
+            _self.FireCount = 0;
+            _self.FireBullet();
             setTimeout(function () {
                 _self.FireBullet();
-            }, 30);
+            }, 100);
         }
         return this;
     };
@@ -90,6 +92,7 @@ app.LoadFile({
      * @returns {TackModel}
      */
     TackModel.prototype.ObstacleDetection = function (point) {
+
         return this;
     };
     /**
@@ -111,6 +114,7 @@ app.LoadFile({
      */
     TackModel.prototype.move = function () {
         var point = [this.point[0], this.point[1]];
+        if (this.DIRECTIONDistance[0] == 0 && this.DIRECTIONDistance[1] == 0) return this;
         point[0] += this.DIRECTIONDistance[0];
         point[1] += this.DIRECTIONDistance[1];
         this.BoundaryDetection(point).ObstacleDetection(point);
@@ -149,13 +153,44 @@ app.LoadFile({
      */
     TackModel.prototype.FireBullet = function () {
         var bullet = new BulletModel(this.getFireBulletPoint()).setDirection(this.direction)
-            .setDistance(this.BullSpeed, Math.abs(this.DIRECTIONDistance[0] / this.moveVector[0] || this.DIRECTIONDistance[1] / this.moveVector[1]));
+            .setDistance(this.BullSpeed, 0);
+//            .setDistance(this.BullSpeed, Math.abs(this.DIRECTIONDistance[0] / this.moveVector[0] || this.DIRECTIONDistance[1] / this.moveVector[1]));
         this.BulletCache.push(bullet);
         bullet.removeTackCache(this);
         this.Game.putGameModel(bullet);
         return this;
     };
 
+    /**
+     *
+     * @returns {TackModel}
+     */
+    TackModel.prototype.proxyKeyFn = function (type) {
+        var _self = this , keyCodeDIRECTION = {38: 'UPPER', 39: 'ALSO', 40: 'LOWER', 37: 'LEFT'},
+            keyFns = {
+                "keydown": function (keyCode) {
+                    if (keyCode == 83)_self.FireBulletKey = 'DOWN';
+                    else if (keyCodeDIRECTION[keyCode])_self.setDirection(keyCodeDIRECTION[keyCode]);
+                    return this;
+                },
+                "keyup": function (keyCode) {
+                    if (keyCode == 83)_self.FireBulletKey = 'UP';
+                    else if (keyCodeDIRECTION[keyCode]) _self.stopMove();
+                    return this;
+                }
+            };
+        return keyFns[type];
+    };
+
+    /**
+     * 停止移动
+     * @returns {TackModel}
+     */
+    TackModel.prototype.stopMove = function () {
+        this.DIRECTIONDistance[0] = 0;
+        this.DIRECTIONDistance[1] = 0;
+        return this;
+    };
     /**
      * 设置移动方向
      * @param direction

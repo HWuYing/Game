@@ -48,6 +48,9 @@
     }
 
     Function.prototype.extend = function(superFn){
+        console.log(this);
+        console.log(superFn);
+        console.log('========');
         if(!isFunction(superFn)) throw new Error('super is not function');
         if(this instanceof superFn) return this;
         var prototype = new Function() , subFnPrototype = this.prototype;
@@ -282,6 +285,8 @@
             this.loadCallBacks = []; //加载完成时 通知队列
             this.runCallBacks = []; //执行完成时 通知队列
             this.fitness = 0; //未加载 1 正在加载 2 正在执行 3 执行完成 4加载完成
+            this.fitnessLoad = 0;
+            this.fitnessRun = 0;
             this.exports = {}; //文件中的对象{}
             this.fileManage = null; // 关联的manage对象
         }
@@ -366,16 +371,14 @@
         };
         /**
          * 加载当前文件
-         * @constructor
          */
         File.prototype.Load = function () {
-            if (this.fitness == 0) {
-                this.fitness = 1;
+            if (this.fitnessLoad == 0) {
                 loadJfILEs.call(this, this.url, function () {
                     this.RunDefine();
-                    this.fitness = 4;
+                    this.fitnessLoad = 1;
                 });
-            } else if (this.fitness >= 2) {
+            } else if (this.fitnessLoad == 1 && this.fitnessRun == 1) {
                 this.RunDefine();
             }
         };
@@ -383,11 +386,10 @@
          * 执行运行完成通知
          */
         File.prototype.run = function () {
-            if (this.fitness == 1) {
-                this.fitness = 2;
+            if (this.fitnessRun == 0) {
                 this.runCallBacks = this.each(this.runCallBacks);
-                this.fitness = 3;
-            } else if (this.fitness == 4) {
+                this.fitnessRun = 1;
+            } else if (this.fitnessLoad == 1 && this.fitnessRun==1) {
                 this.runCallBacks = this.each(this.runCallBacks);
             }
         };
