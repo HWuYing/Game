@@ -101,7 +101,7 @@ app.LoadFile({key: 'BaseModel', fileList: ['custom/Game.js']}, function (Game) {
      * @returns {BaseModel}
      */
     BaseModel.prototype.removeGameDraw = function () {
-        this.removeModel();
+        this.removeModel(null);
         return this;
     };
     /**
@@ -125,6 +125,16 @@ app.LoadFile({key: 'BaseModel', fileList: ['custom/Game.js']}, function (Game) {
     BaseModel.prototype.putClearModel = function (model) {
         this.clearModelCache.push(model);
         if (this.clearModelCache.length > 1500) this.clearAbandonedModel();
+        return this;
+    };
+
+    /**
+     * 碰撞检测
+     * @param model
+     * @returns {BaseModel}
+     */
+    BaseModel.prototype.collisionDetection = function(model){
+        console.log(this);
         return this;
     };
     return BaseModel;

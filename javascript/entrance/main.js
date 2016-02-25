@@ -8,7 +8,8 @@
         'custom/GameModel/obstacle/SteelPlate.js',
         'custom/GameModel/obstacle/Brick.js',
         'custom/GameModel/obstacle/Boss.js',
-        'custom/keyManager.js'], function (Game, BgModel, TackModel ,ComputerTack, SteelPlate, Brick, Boss,keyManager) {
+        'custom/keyManager.js',
+        'custom/GameModel/moveModel/Bullet/BulletModel.js'], function (Game, BgModel, TackModel ,ComputerTack, SteelPlate, Brick, Boss,keyManager,BulletModel) {
         var cGame, baseUrl = app.getValue('baseUrl'), MapArr = [
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -62,12 +63,15 @@
         /*{UPPER: 'upper', ALSO: 'also', LOWER: "lower", LEFT: 'left'}*/
         var Tack001 = new TackModel(120 , 360 , 30, 30, 20).setDistance(3, 3)
             .setImgSrc(baseUrl + 'images/Tack.png').setGame(cGame).setMap(MapArr).setDirection('UPPER');
+        BulletModel.addTack(Tack001);
         cGame.putGameModel(Tack001);
         keyManager.listenKeyDown(Tack001.proxyKeyFn('keydown')).listenKeyUp(Tack001.proxyKeyFn('keyup'));
         (function () {
             for (var i = 0; i < 1; i++) {
-                cGame.putGameModel(new ComputerTack(i * 30 % 360, (i + 1) * 330 % 360, 30, 30, 20).setDistance((i + 1) * 3, (i + 1) * 3)
-                    .setImgSrc(baseUrl + 'images/Tack.png').setGame(cGame).setMap(MapArr).setDirection('UPPER'));
+                Tack001 = new ComputerTack(i * 30 % 360, (i + 1) * 330 % 360, 30, 30, 20).setDistance((i + 1) * 3, (i + 1) * 3)
+                    .setImgSrc(baseUrl + 'images/Tack.png').setGame(cGame).setMap(MapArr).setDirection('UPPER')
+                cGame.putGameModel(Tack001);
+                BulletModel.addTack(Tack001);
             }
         })();
         (function () {
@@ -82,7 +86,6 @@
                 }
             }
         })();
-
         Game.Run();
         //setTimeout(Game.stop, 1000);
     });

@@ -3,6 +3,7 @@
  */
 app.LoadFile({key: 'BulletModel', fileList: ['custom/GameModel/moveModel/MoveModel.js']
 }, function (MoveModel) {
+    var TackCache = {};
     function BulletModel(point , position) {
         MoveModel.call(this, point[0]-1, point[1]-1, 2, 2 , position||10);
     }
@@ -17,7 +18,21 @@ app.LoadFile({key: 'BulletModel', fileList: ['custom/GameModel/moveModel/MoveMod
         ctx.fill();
         ctx.restore();
     };
-
+    /**
+     * 界面上所以Tack集合
+     */
+    BulletModel.addTack = function(TackModel){
+        if(!!TackModel.BulletCachePid) return;
+        var date = new Date();
+        TackModel.BulletCachePid = date;
+        TackCache[date] = TackModel;
+    };
+    /**
+     *移除知道Tack
+     */
+    BulletModel.removeTack = function(TackModel){
+        delete TackCache[TackModel.BulletCachePid];
+    };
     /**
      * 是否达到移动最大值
      * @returns {boolean}
@@ -33,6 +48,14 @@ app.LoadFile({key: 'BulletModel', fileList: ['custom/GameModel/moveModel/MoveMod
         this.point[0]+=this.distance[0]*this.moveVector[0];
         this.point[1]+=this.distance[1]*this.moveVector[1];
         if(this.moveMaxMove())this.putClearModel(this).removeTackCache();
+        this.detectionTackHit();
+        return this;
+    };
+
+    BulletModel.prototype.detectionTackHit = function(){
+        for(var key in TackCache){
+            this.collisionDetection(TackCache[key]);
+        }
         return this;
     };
     /**
