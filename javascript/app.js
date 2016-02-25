@@ -281,7 +281,6 @@
             this.url = url; //文件url
             this.loadCallBacks = []; //加载完成时 通知队列
             this.runCallBacks = []; //执行完成时 通知队列
-            this.fitness = 0; //未加载 1 正在加载 2 正在执行 3 执行完成 4加载完成
             this.fitnessLoad = 0;
             this.fitnessRun = 0;
             this.exports = {}; //文件中的对象{}
@@ -360,33 +359,29 @@
          */
         File.prototype.RunDefine = function () {
             this.loadCallBacks = this.each(this.loadCallBacks);
-            if (this.fileManage && this.fileManage.defineFitness) {
-                this.fileManage.rCB();
-                this.fileManage = null;
-            }
-            else this.run();
+            if (this.fileManage && this.fileManage.defineFitness) this.fileManage.rCB();
+            else {
+                this.fitnessRun = 2;
+                this.run();
+            };
         };
         /**
          * 加载当前文件
          */
         File.prototype.Load = function () {
             if (this.fitnessLoad == 0) {
+                this.fitnessLoad = 1;
                 loadJfILEs.call(this, this.url, function () {
+                    this.fitnessLoad = 2;
                     this.RunDefine();
-                    this.fitnessLoad = 1;
                 });
-            } else if (this.fitnessLoad == 1 && this.fitnessRun == 1) {
-                this.RunDefine();
-            }
+            } else if (this.fitnessLoad == 2) this.RunDefine();
         };
         /**
          * 执行运行完成通知
          */
         File.prototype.run = function () {
-            if (this.fitnessRun == 0) {
-                this.runCallBacks = this.each(this.runCallBacks);
-                this.fitnessRun = 1;
-            } else if (this.fitnessLoad == 1 && this.fitnessRun==1) {
+            if (this.fitnessRun == 2) {
                 this.runCallBacks = this.each(this.runCallBacks);
             }
         };
@@ -456,6 +451,7 @@
                         exports = _this.RunDefine();
                         exports !== _this && _this.file && (_this.file.exports = exports);
                         _this.defineFitness = false;
+                        _this.file && ( _this.file.fitnessRun=2);
                         if (_this.file) _this.file.run();
                         _this.file = null;
                     }

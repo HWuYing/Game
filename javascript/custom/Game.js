@@ -4,7 +4,6 @@
 app.LoadFile({key: 'Game'}, function () {
     var DIVIDESIZE = {XSize: null, YSize: null}, GameCache = [], si = null,
         DRAWSTATE = false, RunTime = 30;
-
     function Run() {
         if (DRAWSTATE) return;
         for (var i = 0, ii = GameCache.length; i < ii; i++) GameCache[i].drawGameModel();

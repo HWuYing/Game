@@ -134,8 +134,9 @@ app.LoadFile({key: 'BaseModel', fileList: ['custom/Game.js']}, function (Game) {
      * @returns {BaseModel}
      */
     BaseModel.prototype.collisionDetection = function(model){
-        console.log(this);
+        //console.log(this);
         return this;
     };
+
     return BaseModel;
 });
