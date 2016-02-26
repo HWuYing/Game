@@ -1,11 +1,11 @@
 /**
  * Created by Administrator on 2016/2/21.
  */
-app.LoadFile({key: 'BulletModel', fileList: ['custom/GameModel/moveModel/MoveModel.js']
-}, function (MoveModel) {
+app.LoadFile({key: 'BulletModel', fileList: ['custom/GameModel/moveModel/MoveModel.js','custom/GameModel/obstacle/ObstacleModel.js']
+}, function (MoveModel,ObstacleModel) {
     var TackCache = [];
     function BulletModel(point , position) {
-        MoveModel.call(this, point[0]-1, point[1]-1, 2, 2 , position||10);
+        MoveModel.call(this, point[0]-1, point[1]-1, 15, 15 , position||10);
         this.Tack = null;
     }
     BulletModel.extend(MoveModel);
@@ -15,7 +15,7 @@ app.LoadFile({key: 'BulletModel', fileList: ['custom/GameModel/moveModel/MoveMod
         ctx.save();
         ctx.fillStyle = "#ffffff";
         ctx.beginPath(this.point[1]);
-        ctx.arc(this.point[0],this.point[1], this.size[1],0,2*Math.PI);
+        ctx.arc(this.point[0],this.point[1], 2,0,2*Math.PI);
         ctx.closePath();
         ctx.fill();
         ctx.restore();
@@ -50,18 +50,57 @@ app.LoadFile({key: 'BulletModel', fileList: ['custom/GameModel/moveModel/MoveMod
         this.point[0]+=this.distance[0]*this.moveVector[0];
         this.point[1]+=this.distance[1]*this.moveVector[1];
         if(this.moveMaxMove())this.putClearModel(this).removeTackCache();
-        this.detectionTackHit();
+        this.detectionTackHit().ObstacleDetection(); //打中Tack否
         return this;
     };
 
+    /**
+     * 打中Tack调用
+     * @param TackHit
+     * @returns {BulletModel}
+     * @constructor
+     */
     BulletModel.prototype.HitTack = function(TackHit){
         BulletModel.removeTack(TackHit); // 将Tack从缓存中移除
         TackHit.bulletHit(); //坦克中弹
-        this.removeTackCache(null);
-        this.putClearModel(this); // 放入缓存 等待清理
+        this.removeTackCache(null).putClearModel(this); // 放入缓存 等待清理
         return this;
     };
 
+    /**
+     * 打中障碍物
+     * @returns {BulletModel}
+     * @constructor
+     */
+    BulletModel.prototype.HitObstacle = function(){
+        this.removeTackCache(null).putClearModel(this);
+        return this;
+    };
+
+
+    /**
+     * 障碍物检测
+     * @returns {BulletModel}
+     */
+    BulletModel.prototype.ObstacleDetection = function(){
+        var mapCol , map;
+        for(var i = 0 , ii = this.Map.length ; i< ii ; i++){
+            mapCol = this.Map[i];
+            for(var j = 0 , jj = mapCol.length ; j < jj ;j++){
+                map = mapCol[j];
+                if(map instanceof ObstacleModel && this.collisionDetection(map)){
+                    this.HitObstacle();
+                    if(map.bulletHit(this))mapCol[j] = 0;
+                }
+            }
+        }
+        return this;
+    };
+
+    /**
+     * 是否打中Tack
+     * @returns {BulletModel}
+     */
     BulletModel.prototype.detectionTackHit = function(){
         var TackIte , key , kk;
         for(key = 0 , kk =  TackCache.length ; key < kk ; key++){
@@ -81,7 +120,7 @@ app.LoadFile({key: 'BulletModel', fileList: ['custom/GameModel/moveModel/MoveMod
     BulletModel.prototype.removeTackCache = function(Tack){
         this.Tack = Tack;
         this.removeTackCache = function(){
-            if(!Tack || Tack.BulletCache.length == 0) return;
+            if(!Tack || Tack.BulletCache.length == 0) return this;
             this.drawState = false;
             for(var i = Tack.BulletCache.length-1; i >= 0 ; i--){
                 if(Tack.BulletCache[i] == this){

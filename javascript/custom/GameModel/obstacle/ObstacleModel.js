@@ -8,5 +8,6 @@ app.LoadFile({key: 'ObstacleModel', fileList: ['custom/GameModel/BaseModel.js']
         this.angle = null;
     }
     ObstacleModel.extend(BaseModel);
+    ObstacleModel.prototype.bulletHit = function(){return false;};
     return ObstacleModel;
 });

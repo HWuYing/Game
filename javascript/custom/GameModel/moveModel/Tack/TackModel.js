@@ -3,8 +3,8 @@
  */
 app.LoadFile({
     key: 'TackModel', fileList: ['custom/GameModel/moveModel/MoveModel.js',
-        'custom/GameModel/moveModel/Bullet/BulletModel.js']
-}, function (MoveModel, BulletModel) {
+        'custom/GameModel/moveModel/Bullet/BulletModel.js','custom/GameModel/obstacle/ObstacleModel.js']
+}, function (MoveModel, BulletModel,ObstacleModel) {
     var imgReact = {
         UPPER: [23, 302, 38, 38],
         ALSO: [24, 218, 35, 35],
@@ -97,7 +97,27 @@ app.LoadFile({
      * @returns {TackModel}
      */
     TackModel.prototype.ObstacleDetection = function (point) {
-
+        var point1 = [this.point[0],this.point[1]];
+        this.point[0] = point[0];
+        this.point[1] = point[1];
+        var mapCol , map , obstacleModel;
+        for(var i = 0 , ii = this.Map.length ; i< ii ; i++){
+            mapCol = this.Map[i];
+            for(var j = 0 , jj = mapCol.length ; j < jj ;j++){
+                map = mapCol[j];
+                if(map instanceof ObstacleModel && this.collisionDetection(map)){
+                    obstacleModel = map;
+                    break;
+                }
+            }
+            if(obstacleModel) break;
+        }
+//        console.log(obstacleModel)
+        if(obstacleModel) {
+            this.stopMove();
+            point[0] = point1[0];
+            point[1] = point1[1];
+        }
         return this;
     };
     /**
@@ -158,7 +178,7 @@ app.LoadFile({
      */
     TackModel.prototype.FireBullet = function () {
         var bullet = new BulletModel(this.getFireBulletPoint()).setDirection(this.direction)
-            .setDistance(this.BullSpeed, 0);
+            .setDistance(this.BullSpeed, 0).setMap(this.Map);
 //            .setDistance(this.BullSpeed, Math.abs(this.DIRECTIONDistance[0] / this.moveVector[0] || this.DIRECTIONDistance[1] / this.moveVector[1]));
         this.BulletCache.push(bullet);
         bullet.removeTackCache(this);
