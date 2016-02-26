@@ -130,7 +130,7 @@ app.LoadFile({key: 'BaseModel', fileList: ['custom/Game.js']}, function (Game) {
     };
 
     /**
-     *
+     * 碰撞检测
      * @param model
      * @returns {boolean}
      */

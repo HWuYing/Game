@@ -9,28 +9,36 @@ app.LoadFile({key: 'ComputerTack', fileList: ['custom/GameModel/moveModel/Tack/T
     }
     ComputerTack.extend(TackModel);
     /**
-     * point
-     * @param point
+     * 绘制完成后调用
      * @returns {ComputerTack}
      */
-    ComputerTack.prototype.BoundaryDetection = function (point) {
-        /*{UPPER: 'upper', ALSO: 'also', LOWER: "lower", LEFT: 'left'}*/
-        if (point[0] > this.maxMove[0] - this.size[0]){
-            this.setDirection('LOWER');
-            point[0] = this.maxMove[0] - this.size[0];
-        }
-        else if (point[0] < 0){
-            this.setDirection('UPPER');
-            point[0] = 0;
-        }
-        if (point[1] > this.maxMove[1] - this.size[1]){
-            this.setDirection('LEFT');
-            point[1] = this.maxMove[1] - this.size[1];
-        }
-        else if (point[1] < 0){
-            this.setDirection('ALSO');
-            point[1] = 0;
-        }
+    ComputerTack.prototype.drawCallBack = function () {
+        this.move().testingFireBull().randomKey();
+        return this;
+    };
+
+    ComputerTack.prototype.randomKey = function(){
+        var keyDownFn = this.proxyKeyFn('keydown'), oldKey, FireBulletCount = 0 ,
+            keyUpFn = this.proxyKeyFn('keyup') , directionCount = 0
+            , directionNumber = 10;
+        this.randomKey = function(){
+            var keyCode , FireBulletKeyCode = Math.floor(Math.random() * 100 % 5 + 81);
+            directionCount++,FireBulletCount++;
+            if(FireBulletKeyCode == 83 && FireBulletCount >= 150){
+                keyDownFn(FireBulletKeyCode);
+                FireBulletCount = 0;
+            }else keyUpFn(FireBulletKeyCode);
+            if(directionCount >= directionNumber) {
+                directionCount = 0;
+                directionNumber = Math.floor(Math.random() * 100) % 20 + 80;
+                keyCode = Math.floor(Math.random() * 40) % 4 + 37;
+                if (oldKey) keyUpFn(oldKey);
+                keyDownFn(keyCode);
+                oldKey = keyCode;
+            }
+            return this;
+        };
+        this.randomKey();
         return this;
     };
     return ComputerTack;

@@ -48,8 +48,12 @@ app.LoadFile({
      * @returns {TackModel}
      */
     TackModel.prototype.drawCallBack = function () {
+        this.move().testingFireBull();
+        return this;
+    };
+
+    TackModel.prototype.testingFireBull = function(){
         var _self = this;
-        this.move();
         this.FireCount++;
         if (_self.FireBulletKey == 'DOWN' && _self.BulletCache.length <= 3 && _self.FireCount >= _self.FireInterval) {
             _self.FireCount = 0;
@@ -60,6 +64,7 @@ app.LoadFile({
         }
         return this;
     };
+
     /**
      * 通过方向 获取移动速度
      * @returns {TackModel}
@@ -162,7 +167,7 @@ app.LoadFile({
     };
 
     /**
-     *
+     * 键盘事件获取函数
      * @returns {TackModel}
      */
     TackModel.prototype.proxyKeyFn = function (type) {
@@ -202,6 +207,10 @@ app.LoadFile({
         return this;
     };
 
+    /**
+     * 中弹以后处理
+     * @returns {TackModel}
+     */
     TackModel.prototype.bulletHit = function(){
         this.drawState = false;
         this.putClearModel(this);

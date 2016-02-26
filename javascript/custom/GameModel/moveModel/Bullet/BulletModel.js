@@ -57,8 +57,8 @@ app.LoadFile({key: 'BulletModel', fileList: ['custom/GameModel/moveModel/MoveMod
     BulletModel.prototype.HitTack = function(TackHit){
         BulletModel.removeTack(TackHit); // 将Tack从缓存中移除
         TackHit.bulletHit(); //坦克中弹
-        this.drawState = false;
-        this.putClearModel(this); //
+        this.drawState = false; //不在绘制
+        this.putClearModel(this); // 放入缓存 等待清理
         return this;
     };
 
