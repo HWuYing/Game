@@ -115,20 +115,6 @@ app.LoadFile({
         if(obstacleModel) {
             point[0] = point1[0];
             point[1] = point1[1];
-//            switch (this.direction) {
-//                case DIRECTION.UPPER :
-//                    point[1] = obstacleModel.point[1] + obstacleModel.size[1];
-//                    break;
-//                case DIRECTION.ALSO :
-//                    point[0] = obstacleModel.point[0] - this.size[1];
-//                    break;
-//                case DIRECTION.LOWER :
-//                    point[1] = obstacleModel.point[1] - this.size[1];
-//                    break;
-//                case DIRECTION.LEFT :
-//                    point[0] = obstacleModel.point[0] + obstacleModel.size[0];
-//                    break;
-//            }
             this.stopMove();
         }
         return this;
