@@ -3,12 +3,14 @@
  */
 app.LoadFile({key: 'BulletModel', fileList: ['custom/GameModel/moveModel/MoveModel.js']
 }, function (MoveModel) {
-    var TackCache = {};
+    var TackCache = [];
     function BulletModel(point , position) {
         MoveModel.call(this, point[0]-1, point[1]-1, 2, 2 , position||10);
+        this.Tack = null;
     }
     BulletModel.extend(MoveModel);
     BulletModel.prototype.draw = function(ctx){
+        if(this.drawState == false) return;
         this.move();
         ctx.save();
         ctx.fillStyle = "#ffffff";
@@ -23,15 +25,15 @@ app.LoadFile({key: 'BulletModel', fileList: ['custom/GameModel/moveModel/MoveMod
      */
     BulletModel.addTack = function(TackModel){
         if(!!TackModel.BulletCachePid) return;
-        var date = new Date();
-        TackModel.BulletCachePid = date;
-        TackCache[date] = TackModel;
+        TackModel.BulletCachePid = TackCache.length;
+        TackCache.push(TackModel);
     };
     /**
-     *移除知道Tack
+     *移除指定Tack
      */
     BulletModel.removeTack = function(TackModel){
-        delete TackCache[TackModel.BulletCachePid];
+        TackCache[TackModel.BulletCachePid] = null;
+        delete TackModel.BulletCachePid;
     };
     /**
      * 是否达到移动最大值
@@ -52,9 +54,22 @@ app.LoadFile({key: 'BulletModel', fileList: ['custom/GameModel/moveModel/MoveMod
         return this;
     };
 
+    BulletModel.prototype.HitTack = function(TackHit){
+        BulletModel.removeTack(TackHit); // 将Tack从缓存中移除
+        TackHit.bulletHit(); //坦克中弹
+        this.drawState = false;
+        this.putClearModel(this); //
+        return this;
+    };
+
     BulletModel.prototype.detectionTackHit = function(){
-        for(var key in TackCache){
-            this.collisionDetection(TackCache[key]);
+        var TackIte , key , kk;
+        for(key = 0 , kk =  TackCache.length ; key < kk ; key++){
+            TackIte = TackCache[key];
+            if(TackIte != null && this.Tack != TackIte && this.collisionDetection(TackIte)){
+                this.HitTack(TackIte);
+                break;
+            }
         }
         return this;
     };
@@ -64,6 +79,7 @@ app.LoadFile({key: 'BulletModel', fileList: ['custom/GameModel/moveModel/MoveMod
      * @returns {BulletModel}
      */
     BulletModel.prototype.removeTackCache = function(Tack){
+        this.Tack = Tack;
         this.removeTackCache = function(){
             if(!Tack || Tack.BulletCache.length == 0) return;
             for(var i = Tack.BulletCache.length-1; i >= 0 ; i--){

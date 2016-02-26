@@ -69,8 +69,8 @@
         keyManager.listenKeyDown(Tack001.proxyKeyFn('keydown')).listenKeyUp(Tack001.proxyKeyFn('keyup'));
         (function () {
             for (var i = 0; i < 1; i++) {
-                Tack001 = new ComputerTack(i * 30 % 360, (i + 1) * 330 % 360, 30, 30, 20).setDistance((i + 1) * 3, (i + 1) * 3)
-                    .setImgSrc(baseUrl + 'images/Tack.png').setGame(cGame).setMap(MapArr).setDirection('UPPER')
+                Tack001 = new ComputerTack(i * 30 % 360, (i + 1) * 330 % 360, 30, 30, 20).setDistance((i) * 3, (i) * 3)
+                    .setImgSrc(baseUrl + 'images/Tack.png').setGame(cGame).setMap(MapArr).setDirection('UPPER');
                 cGame.putGameModel(Tack001);
                 BulletModel.addTack(Tack001);
             }
@@ -88,6 +88,6 @@
             }
         })();
         Game.Run();
-        //setTimeout(Game.stop, 1000);
+//        setTimeout(Game.stop, 1000);
     });
 })();

@@ -6,6 +6,7 @@ app.LoadFile({key: 'BaseModel', fileList: ['custom/Game.js']}, function (Game) {
         this.point = [x , y];
         this.size = [XSize , YSize];
         this.position = position || 1;
+        this.drawState = true; // 是否在canvas中绘制
     }
 
     //清除不需要的缓存
@@ -129,13 +130,16 @@ app.LoadFile({key: 'BaseModel', fileList: ['custom/Game.js']}, function (Game) {
     };
 
     /**
-     * 碰撞检测
+     *
      * @param model
-     * @returns {BaseModel}
+     * @returns {boolean}
      */
     BaseModel.prototype.collisionDetection = function(model){
-        //console.log(this);
-        return this;
+        var point1 = [this.point[0]+this.size[0]/2,this.point[1]+this.size[1]/2] , point2 = [model.point[0]+model.size[0]/2,model.point[1]+model.size[1]/2],
+            nowWidth = Math.abs(point1[0]-point2[0]),nowHeight = Math.abs(point1[1]-point2[1]),
+            minWidth =  Math.abs((this.size[0] + model.size[0])/2) , minHeight =  Math.abs((this.size[1] + model.size[1])/2);
+        if(nowWidth >= minWidth || nowHeight >= minHeight) return false;
+        return true;
     };
 
     return BaseModel;

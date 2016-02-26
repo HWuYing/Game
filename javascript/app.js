@@ -355,7 +355,6 @@
         };
         /**
          * 加载完成时 通知对应的manage 告诉他我加载完成了
-         * @constructor
          */
         File.prototype.RunDefine = function () {
             this.loadCallBacks = this.each(this.loadCallBacks);
@@ -381,9 +380,8 @@
          * 执行运行完成通知
          */
         File.prototype.run = function () {
-            if (this.fitnessRun == 2) {
-                this.runCallBacks = this.each(this.runCallBacks);
-            }
+            if (this.fitnessRun == 2) this.runCallBacks = this.each(this.runCallBacks);
+
         };
 
         /**

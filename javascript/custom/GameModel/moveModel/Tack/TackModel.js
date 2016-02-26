@@ -33,7 +33,7 @@ app.LoadFile({
      * @returns {TackModel}
      */
     TackModel.prototype.draw = function (ctx) {
-        if (!this.Image) return this;
+        if (!this.Image || this.drawState == false) return this;
         ctx.save();
         if (this.react) ctx.drawImage(this.Image, this.react[0], this.react[1], this.react[2], this.react[3],
             this.point[0], this.point[1], this.size[0], this.size[1]);
@@ -202,5 +202,10 @@ app.LoadFile({
         return this;
     };
 
+    TackModel.prototype.bulletHit = function(){
+        this.drawState = false;
+        this.putClearModel(this);
+        return this;
+    };
     return TackModel;
 });
