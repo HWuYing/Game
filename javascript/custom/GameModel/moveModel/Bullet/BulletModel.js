@@ -90,7 +90,7 @@ app.LoadFile({key: 'BulletModel', fileList: ['custom/GameModel/moveModel/MoveMod
                 map = mapCol[j];
                 if(map instanceof ObstacleModel && this.collisionDetection(map)){
                     this.HitObstacle();
-                    if(map.bulletHit(this))mapCol[j] = 0;
+                    if(map.bulletHit(this)) mapCol[j] = 0;
                 }
             }
         }
