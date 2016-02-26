@@ -5,7 +5,7 @@ app.LoadFile({key: 'BulletModel', fileList: ['custom/GameModel/moveModel/MoveMod
 }, function (MoveModel,ObstacleModel) {
     var TackCache = [];
     function BulletModel(point , position) {
-        MoveModel.call(this, point[0]-1, point[1]-1, 15, 15 , position||10);
+        MoveModel.call(this, point[0]-1, point[1]-1, 6, 6 , position||10);
         this.Tack = null;
     }
     BulletModel.extend(MoveModel);
@@ -15,7 +15,7 @@ app.LoadFile({key: 'BulletModel', fileList: ['custom/GameModel/moveModel/MoveMod
         ctx.save();
         ctx.fillStyle = "#ffffff";
         ctx.beginPath(this.point[1]);
-        ctx.arc(this.point[0],this.point[1], 2,0,2*Math.PI);
+        ctx.arc(this.point[0],this.point[1], this.size[0]/3,0,2*Math.PI);
         ctx.closePath();
         ctx.fill();
         ctx.restore();
@@ -164,6 +164,14 @@ app.LoadFile({key: 'BulletModel', fileList: ['custom/GameModel/moveModel/MoveMod
      */
     BulletModel.prototype.setSize = function(){
         return this;
+    };
+
+    BulletModel.prototype.collisionDetection = function(model){
+        var point1 = [this.point[0],this.point[1]] , point2 = [model.point[0]+model.size[0]/2,model.point[1]+model.size[1]/2],
+            nowWidth = Math.abs(point1[0]-point2[0]),nowHeight = Math.abs(point1[1]-point2[1]),
+            minWidth =  Math.abs(this.size[0] + model.size[0] /2) , minHeight =  Math.abs(this.size[1] + model.size[1]/2);
+        if(nowWidth >= minWidth || nowHeight >= minHeight) return false;
+        return true;
     };
     return BulletModel;
 });
