@@ -57,7 +57,7 @@ app.LoadFile({key: 'BulletModel', fileList: ['custom/GameModel/moveModel/MoveMod
     BulletModel.prototype.HitTack = function(TackHit){
         BulletModel.removeTack(TackHit); // 将Tack从缓存中移除
         TackHit.bulletHit(); //坦克中弹
-        this.drawState = false; //不在绘制
+        this.removeTackCache(null);
         this.putClearModel(this); // 放入缓存 等待清理
         return this;
     };
@@ -66,7 +66,7 @@ app.LoadFile({key: 'BulletModel', fileList: ['custom/GameModel/moveModel/MoveMod
         var TackIte , key , kk;
         for(key = 0 , kk =  TackCache.length ; key < kk ; key++){
             TackIte = TackCache[key];
-            if(TackIte != null && this.Tack != TackIte && this.collisionDetection(TackIte)){
+            if(TackIte != null && this.Tack.__proto__ != TackIte.__proto__ && this.collisionDetection(TackIte)){
                 this.HitTack(TackIte);
                 break;
             }
@@ -82,6 +82,7 @@ app.LoadFile({key: 'BulletModel', fileList: ['custom/GameModel/moveModel/MoveMod
         this.Tack = Tack;
         this.removeTackCache = function(){
             if(!Tack || Tack.BulletCache.length == 0) return;
+            this.drawState = false;
             for(var i = Tack.BulletCache.length-1; i >= 0 ; i--){
                 if(Tack.BulletCache[i] == this){
                     Tack.BulletCache.splice(i, 1);
