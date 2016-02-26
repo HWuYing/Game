@@ -68,8 +68,8 @@
         cGame.putGameModel(Tack001);
         keyManager.listenKeyDown(Tack001.proxyKeyFn('keydown')).listenKeyUp(Tack001.proxyKeyFn('keyup'));
         (function () {
-            for (var i = 0; i < 10; i++) {
-                Tack001 = new ComputerTack((i * 180 + 180) % 540, 0 , 30, 30, 20).setDistance(3, 3)
+            for (var i = 0; i < 0; i++) {
+                Tack001 = new ComputerTack((i * 180 + 180) % 540, 0 , 30, 28, 20).setDistance(3, 3)
                     .setImgSrc(baseUrl + 'images/Tack.png').setGame(cGame).setMap(MapArr).setDirection('UPPER');
                 cGame.putGameModel(Tack001);
                 BulletModel.addTack(Tack001);

@@ -6,8 +6,8 @@ app.LoadFile({
         'custom/GameModel/moveModel/Bullet/BulletModel.js','custom/GameModel/obstacle/ObstacleModel.js']
 }, function (MoveModel, BulletModel,ObstacleModel) {
     var imgReact = {
-        UPPER: [23, 302, 38, 38],
-        ALSO: [24, 218, 35, 35],
+        UPPER: [23, 302, 38, 35],
+        ALSO: [24, 218, 38, 38],
         LOWER: [23, 50, 38, 38],
         LEFT: [24, 133, 35, 38]
     };
@@ -97,7 +97,7 @@ app.LoadFile({
      * @returns {TackModel}
      */
     TackModel.prototype.ObstacleDetection = function (point) {
-        var point1 = [this.point[0],this.point[1]];
+        var point1 = [this.point[0],this.point[1]],DIRECTION = this.DIRECTION;;
         this.point[0] = point[0];
         this.point[1] = point[1];
         var mapCol , map , obstacleModel;
@@ -112,11 +112,24 @@ app.LoadFile({
             }
             if(obstacleModel) break;
         }
-//        console.log(obstacleModel)
         if(obstacleModel) {
-            this.stopMove();
             point[0] = point1[0];
             point[1] = point1[1];
+//            switch (this.direction) {
+//                case DIRECTION.UPPER :
+//                    point[1] = obstacleModel.point[1] + obstacleModel.size[1];
+//                    break;
+//                case DIRECTION.ALSO :
+//                    point[0] = obstacleModel.point[0] - this.size[1];
+//                    break;
+//                case DIRECTION.LOWER :
+//                    point[1] = obstacleModel.point[1] - this.size[1];
+//                    break;
+//                case DIRECTION.LEFT :
+//                    point[0] = obstacleModel.point[0] + obstacleModel.size[0];
+//                    break;
+//            }
+            this.stopMove();
         }
         return this;
     };
@@ -195,12 +208,18 @@ app.LoadFile({
             keyFns = {
                 "keydown": function (keyCode) {
                     if (keyCode == 83)_self.FireBulletKey = 'DOWN';
-                    else if (keyCodeDIRECTION[keyCode])_self.setDirection(keyCodeDIRECTION[keyCode]);
+                    else if (keyCodeDIRECTION[keyCode]){
+                        _self.setDirection(keyCodeDIRECTION[keyCode]);
+                        _self.KeyCodeDirection = keyCodeDIRECTION[keyCode];
+                    }
                     return this;
                 },
                 "keyup": function (keyCode) {
                     if (keyCode == 83)_self.FireBulletKey = 'UP';
-                    else if (keyCodeDIRECTION[keyCode]) _self.stopMove();
+                    else if (keyCodeDIRECTION[keyCode] && _self.KeyCodeDirection == keyCodeDIRECTION[keyCode]){
+                        _self.stopMove();
+                        delete _self.KeyCodeDirection;
+                    }
                     return this;
                 }
             };
