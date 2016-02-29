@@ -3,8 +3,8 @@
  */
 app.LoadFile({
     key: 'TackModel', fileList: ['custom/GameModel/moveModel/MoveModel.js',
-        'custom/GameModel/moveModel/Bullet/BulletModel.js','custom/GameModel/obstacle/ObstacleModel.js']
-}, function (MoveModel, BulletModel,ObstacleModel) {
+        'custom/GameModel/moveModel/Bullet/BulletModel.js', 'custom/GameModel/obstacle/ObstacleModel.js']
+}, function (MoveModel, BulletModel, ObstacleModel) {
     var imgReact = {
         UPPER: [23, 302, 38, 35],
         ALSO: [24, 218, 38, 38],
@@ -52,7 +52,7 @@ app.LoadFile({
         return this;
     };
 
-    TackModel.prototype.testingFireBull = function(){
+    TackModel.prototype.testingFireBull = function () {
         var _self = this;
         this.FireCount++;
         if (_self.FireBulletKey == 'DOWN' && _self.BulletCache.length <= 3 && _self.FireCount >= _self.FireInterval) {
@@ -90,6 +90,24 @@ app.LoadFile({
         return this;
     };
 
+    TackModel.prototype.directionObstacle = function (model , point) {
+        var DIRECTION = this.DIRECTION , state = false;
+        switch (this.direction) {
+            case DIRECTION.UPPER :
+                point[1] >= model.point[1] + model.size[1] ? state = true : state = false;
+                break;
+            case DIRECTION.ALSO :
+                point[0] + this.size[0] <= model.point[0] ? state = true : state = false;
+                break;
+            case DIRECTION.LOWER :
+                point[1] + this.size[1] <= model.point[1] ? state = true : state = false;
+                break;
+            case DIRECTION.LEFT :
+                point[0] >= model.point[0] + model.size[0] ? state = true : state = false;
+                break;
+        }
+        return state;
+    };
 
     /**
      * 障碍物检测
@@ -97,24 +115,40 @@ app.LoadFile({
      * @returns {TackModel}
      */
     TackModel.prototype.ObstacleDetection = function (point) {
-        var point1 = [this.point[0],this.point[1]],DIRECTION = this.DIRECTION;;
+        var point1 = [this.point[0], this.point[1]] ,  DIRECTION = this.DIRECTION ;
         this.point[0] = point[0];
         this.point[1] = point[1];
         var mapCol , map , obstacleModel;
-        for(var i = 0 , ii = this.Map.length ; i< ii ; i++){
+        for (var i = 0 , ii = this.Map.length; i < ii; i++) {
             mapCol = this.Map[i];
-            for(var j = 0 , jj = mapCol.length ; j < jj ;j++){
+            for (var j = 0 , jj = mapCol.length; j < jj; j++) {
                 map = mapCol[j];
-                if(map instanceof ObstacleModel && this.collisionDetection(map)){
-                    obstacleModel = map;
-                    break;
+                if (map instanceof ObstacleModel && this.collisionDetection(map)) {
+                    if (this.directionObstacle(map,point1)) {
+                        obstacleModel = map;
+                        break;
+                    }
                 }
             }
-            if(obstacleModel) break;
+            if (obstacleModel) break;
         }
-        if(obstacleModel) {
+        if (obstacleModel) {
             point[0] = point1[0];
             point[1] = point1[1];
+            switch (this.direction) {
+                case DIRECTION.UPPER :
+                    point[1] =  obstacleModel.point[1] + obstacleModel.size[1];
+                    break;
+                case DIRECTION.ALSO :
+                    point[0] =  obstacleModel.point[0] - this.size[0];
+                    break;
+                case DIRECTION.LOWER :
+                    point[1] =  obstacleModel.point[1] - this.size[1];
+                    break;
+                case DIRECTION.LEFT :
+                    point[0] =  obstacleModel.point[0] + obstacleModel.size[0];
+                    break;
+            }
             this.stopMove();
         }
         return this;
@@ -194,7 +228,7 @@ app.LoadFile({
             keyFns = {
                 "keydown": function (keyCode) {
                     if (keyCode == 83)_self.FireBulletKey = 'DOWN';
-                    else if (keyCodeDIRECTION[keyCode]){
+                    else if (keyCodeDIRECTION[keyCode]) {
                         _self.setDirection(keyCodeDIRECTION[keyCode]);
                         _self.KeyCodeDirection = keyCodeDIRECTION[keyCode];
                     }
@@ -202,7 +236,7 @@ app.LoadFile({
                 },
                 "keyup": function (keyCode) {
                     if (keyCode == 83)_self.FireBulletKey = 'UP';
-                    else if (keyCodeDIRECTION[keyCode] && _self.KeyCodeDirection == keyCodeDIRECTION[keyCode]){
+                    else if (keyCodeDIRECTION[keyCode] && _self.KeyCodeDirection == keyCodeDIRECTION[keyCode]) {
                         _self.stopMove();
                         delete _self.KeyCodeDirection;
                     }
@@ -236,7 +270,7 @@ app.LoadFile({
      * 中弹以后处理
      * @returns {TackModel}
      */
-    TackModel.prototype.bulletHit = function(){
+    TackModel.prototype.bulletHit = function () {
         this.drawState = false;
         this.putClearModel(this);
         return this;

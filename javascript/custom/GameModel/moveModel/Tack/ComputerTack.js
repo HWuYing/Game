@@ -24,13 +24,13 @@ app.LoadFile({key: 'ComputerTack', fileList: ['custom/GameModel/moveModel/Tack/T
         this.randomKey = function(){
             var keyCode , FireBulletKeyCode = Math.floor(Math.random() * 100 % 5 + 81);
             directionCount++,FireBulletCount++;
-            if(FireBulletKeyCode == 83 && FireBulletCount >= 150){
+            if(FireBulletKeyCode == 83 && FireBulletCount >= 100){
                 keyDownFn(FireBulletKeyCode);
                 FireBulletCount = 0;
             }else keyUpFn(FireBulletKeyCode);
             if(directionCount >= directionNumber) {
                 directionCount = 0;
-                directionNumber = Math.floor(Math.random() * 100) % 20 + 80;
+                directionNumber = Math.floor(Math.random() * 100) % 20 + 50;
                 keyCode = Math.floor(Math.random() * 40) % 4 + 37;
                 if (oldKey) keyUpFn(oldKey);
                 keyDownFn(keyCode);

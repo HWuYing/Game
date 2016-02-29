@@ -5,7 +5,7 @@ app.LoadFile({key: 'BulletModel', fileList: ['custom/GameModel/moveModel/MoveMod
 }, function (MoveModel,ObstacleModel) {
     var TackCache = [];
     function BulletModel(point , position) {
-        MoveModel.call(this, point[0]-1, point[1]-1, 6, 6 , position||10);
+        MoveModel.call(this, point[0]-1, point[1]-1, 6, 6 , position||2);
         this.Tack = null;
     }
     BulletModel.extend(MoveModel);

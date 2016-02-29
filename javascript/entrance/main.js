@@ -46,13 +46,13 @@
                 case 0:
                     break;
                 case 1:
-                    GameModelRealization = new SteelPlate(col * 15, row * 15, 15, 15, 2).setImgSrc(baseUrl + 'images/za-001.png');
+                    GameModelRealization = new SteelPlate(col * 15, row * 15, 15, 15, 3).setImgSrc(baseUrl + 'images/za-001.png');
                     break;
                 case 2:
-                    GameModelRealization = new Brick(col * 15, row * 15, 15, 15, 2).setImgSrc(baseUrl + 'images/qiang.png');
+                    GameModelRealization = new Brick(col * 15, row * 15, 15, 15, 3).setImgSrc(baseUrl + 'images/qiang.png');
                     break;
                 case 9:
-                    GameModelRealization = new Boss(col * 15, row * 15, 30, 30, 2).setImgSrc(baseUrl + 'images/BOSS.png');
+                    GameModelRealization = new Boss(col * 15, row * 15, 30, 30, 3).setImgSrc(baseUrl + 'images/BOSS.png');
                     break;
             }
             return GameModelRealization;
@@ -62,14 +62,14 @@
         cGame = Game(document.querySelector('#main'), 390, 390);
         cGame.putGameModel(new BgModel(0, 0, 390, 390, 1).drawType('solidColor', {}));
         /*{UPPER: 'upper', ALSO: 'also', LOWER: "lower", LEFT: 'left'}*/
-        var Tack001 = new TackModel(120, 360, 30, 28, 20).setDistance(3, 3)
+        var Tack001 = new TackModel(120, 360, 28, 28, 20).setDistance(3, 3)
             .setImgSrc(baseUrl + 'images/Tack.png').setGame(cGame).setMap(MapArr).setDirection('UPPER');
         BulletModel.addTack(Tack001);
         cGame.putGameModel(Tack001);
         keyManager.listenKeyDown(Tack001.proxyKeyFn('keydown')).listenKeyUp(Tack001.proxyKeyFn('keyup'));
         (function () {
-            for (var i = 0; i < 0; i++) {
-                Tack001 = new ComputerTack((i * 180 + 180) % 540, 0 , 30, 28, 20).setDistance(3, 3)
+            for (var i = 0; i < 20; i++) {
+                Tack001 = new ComputerTack((i * 180 + 180) % 540, 0 , 28, 28, 20).setDistance(3, 3)
                     .setImgSrc(baseUrl + 'images/Tack.png').setGame(cGame).setMap(MapArr).setDirection('UPPER');
                 cGame.putGameModel(Tack001);
                 BulletModel.addTack(Tack001);
